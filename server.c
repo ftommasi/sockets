@@ -22,8 +22,8 @@ int main( int argc, char** argv){
   
   struct sockaddr_un mysockaddr;
   mysockaddr.sun_family = AF_UNIX;
-  mysockaddr.sun_path = "./sockdescript";
-  
+  char path[] = "./sockdescript";
+  memset( mysockaddr.sun_path,path, 14);
   socklen_t socksize =(socklen_t) sizeof(struct sockaddr_un);
 
   int b= bind(sockfd,  &mysockaddr, socksize);
@@ -39,7 +39,12 @@ int main( int argc, char** argv){
     return -1;
   }
 
-  int a = accept(sockfd,mysockaddr,&socksize);
-
+  int a = accept(sockfd,&mysockaddr,&socksize);
+  if(a==-1){
+    perror("error accepting socket");
+    return -1;
+  }
+  //read and write data here...
+  unlink(sockfd);
   return 0;
 }
