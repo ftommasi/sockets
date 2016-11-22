@@ -24,7 +24,7 @@ int main( int argc, char** argv){
   mysockaddr.sun_family = AF_UNIX;
   char path[] = "./sockdescript";
   memcpy(mysockaddr.sun_path,path, 14);
-  socklen_t socksize =(socklen_t) sizeof(struct sockaddr_un);
+socklen_t socksize =(socklen_t) sizeof(struct sockaddr_un);
 
   int b= bind(sockfd,  &mysockaddr, socksize);
 
