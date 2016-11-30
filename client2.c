@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/un.h>
+#include <netinet/ip.h>
+#include <arpa/inet.h>
 
 /*
  *struct sockaddr_un {
@@ -17,19 +19,23 @@ int main( int argc, char** argv){
   int sockfd;
   int c = -1;
 
-  sockfd =  socket(AF_LOCAL, SOCK_STREAM, 0);
+  sockfd =  socket(AF_INET, SOCK_STREAM, 0);
   if(sockfd == -1){
     perror("error creating socket");
     return -1;
   }
   
-  struct sockaddr_un mysockaddr;
-  mysockaddr.sun_family = AF_UNIX;
+  struct sockaddr_in mysockaddr;
+  mysockaddr.sin_family = AF_INET;
+  mysockaddr.sin_port = htons(17000);
+  inet_aton("165.134.107.80",&mysockaddr.sin_addr.s_addr);
   char path[] = "./sockdescript";
-  memcpy( mysockaddr.sun_path,path, 14);
-  socklen_t socksize =(socklen_t) sizeof(struct sockaddr_un);
+  //memcpy( mysockaddr.sun_path,path, 14);
+  socklen_t socksize =(socklen_t) sizeof(struct sockaddr_in);
 
     c = connect(sockfd,&mysockaddr,socksize);
+   if (c==-1)
+     perror("couldnt connect");
     //read and write stuff here
     void* read_buf[256];
     char* write_string;

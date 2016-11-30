@@ -44,18 +44,19 @@ socklen_t socksize =(socklen_t) sizeof(struct sockaddr_un);
  
   void* read_buf[256];
   while(1){
- a = accept(sockfd,&mysockaddr,&socksize);
-  if(a==-1){
+    a = accept(sockfd,&mysockaddr,&socksize);
+    if(a==-1){
       perror("error accepting socket");
       return -1;
     }
 
     char* write_string = malloc(100*sizeof(char));
     sprintf(write_string,
-        "Writing from server %d time\n\0",connections);
+        "Writing from client #%d\n\0",connections);
     connections++;
     size_t r =  read(a, read_buf,  20);
     printf("The client told me:  \n'%s'\n",read_buf);
+    if(!strncmp(read_buf,"quit",4)) break;
     ssize_t w =  write(a, write_string, strlen(write_string));
     printf("writing to client:  \n'%s'\n",write_string);
     free(write_string);
